@@ -15,62 +15,89 @@ const boolean RADIO = true; // positionner radio pour l'utiliser ou pas
 #include <SoftwareSerial.h>
 #include "JlmRadio433.h"
 
+/* emetteur 433Mhz */
+byte  pinEmission = 10; // pin D10 emetteur radio
+int vitesse = 600; // vitesse transmission
+
 JlmRadio433 rad(RADIO, DEBUG); // class Radio avec true pour envoi par radio
 
-/* emetteur 433Mhz */
-const byte pinEmRadio = 10; // pin D10 emetteur radio
-
+#define LED_PIN 13 // led en broche 13
 
 // définition des pin
 enum PinAssignments {
-
 };
 
 void setup() {
+  pinMode(LED_PIN, OUTPUT); // led
   Serial.begin (9600);
-  if (RADIO) {
-    vw_set_tx_pin(pinEmRadio); // broche d10 emetteur
-    vw_setup(600); // initialisation de la bibliothèque avec la vitesse (vitesse_bps)
-  }
+  rad.init(pinEmission, vitesse);// initialisation de la broche emission et de la vitesse de transmission
 }
 
 void loop ()
 {
+  // N.B. La constante VW_MAX_MESSAGE_LEN est fournie par la lib VirtualWire
   do  {
     if (RADIO) {
-      //char chaine1[VW_MAX_MESSAGE_LEN - 1] = "Time : ";
-      char chaine1[11] = "";
+      char chaine1[VW_MAX_MESSAGE_LEN - 1] = "";
       strcat(chaine1, "A=");
-      char hour_temp[3];
-      char minute_temp[3];
       strcat(chaine1, "14");
-      strcat(chaine1, hour_temp);
       strcat(chaine1, "h");
       strcat(chaine1, "52");
-      strcat(chaine1, minute_temp);
       strcat(chaine1, "m");
-      rad.assemblageMessage(chaine1);// on envoie le message
+      rad.assemblageMessage(chaine1);// on assemble le message
     }
     if (RADIO) {
-      //char chaine1[VW_MAX_MESSAGE_LEN - 1] = "Lum : ";
-      char chaine1[12] = "";
+      char chaine1[VW_MAX_MESSAGE_LEN - 1] = "";
       strcat(chaine1, "I=");
-      char lumSoir_temp[5];
       strcat(chaine1, "930");
-      strcat(chaine1, lumSoir_temp);
-      strcat(chaine1, ";");
-      char lumValue_temp[5];
+      rad.assemblageMessage(chaine1);// on assemble le message
+    }
+    if (RADIO) {
+      char chaine1[VW_MAX_MESSAGE_LEN - 1] = "";
+      strcat(chaine1, "K=");
       strcat(chaine1, "290");
-      strcat(chaine1, lumValue_temp);
-      rad.assemblageMessage(chaine1);// on envoie le message
-    }
-    rad.finMessage();
+      rad.assemblageMessage(chaine1);// on assemble le message
 
-    if (RADIO) { // affichage si la batterie est faible
-      // N.B. La constante VW_MAX_MESSAGE_LEN est fournie par la lib VirtualWire
-      //char chaine1[VW_MAX_MESSAGE_LEN - 1] = "Batterie faible !!!!";
-      char chaine1[21] = "Batterie faible !!!!";
-      rad.envoiMessageRadio(chaine1);// on envoie le message
+      digitalWrite(LED_PIN, HIGH);
+      rad.finMessage(); // fin du message sur une ligne
+      digitalWrite(LED_PIN, LOW);
     }
+    if (RADIO) { // affichage si la batterie est faible
+      char chaine1[VW_MAX_MESSAGE_LEN - 1] = "Batterie faible !!!!";
+      digitalWrite(LED_PIN, HIGH);
+      rad.envoiMessageRadio(chaine1);// on assemble le message
+      digitalWrite(LED_PIN, LOW);
+    }
+    if (RADIO) {
+      char chaine1[VW_MAX_MESSAGE_LEN - 1] = "";
+      strcat(chaine1, "123456789");
+      strcat(chaine1, "abcdefghijklmnopqrstuvwxyz");
+      strcat(chaine1, "123456789");
+      strcat(chaine1, "abcdefghijklmnopqrstuvwxyz");
+      strcat(chaine1, "12345");
+      rad.assemblageMessage(chaine1);//on assemble le message
+
+      digitalWrite(LED_PIN, HIGH);
+      rad.finMessage(); // fin du message sur une ligne
+      digitalWrite(LED_PIN, LOW);
+    }
+    if (RADIO) {
+      char chaine1[VW_MAX_MESSAGE_LEN - 1] = "";
+      strcat(chaine1, "taille maximum du tableau : ");
+      char taille_temp[2];
+      /* char buffer [50];
+        int n, a=5, b=3;
+        n=sprintf (buffer, "%d plus %d is %d", a, b, a+b);
+        printf ("[%s] is a string %d chars long\n",buffer,n);
+      */
+      sprintf(taille_temp, "%d",  VW_MAX_MESSAGE_LEN);
+      strcat(chaine1, taille_temp);
+      rad.assemblageMessage(chaine1);// on assemble le message
+
+      digitalWrite(LED_PIN, HIGH);
+      rad.finMessage(); // fin du message sur une ligne
+      digitalWrite(LED_PIN, LOW);
+    }
+    delay(2000);
   }  while (1) ;
 }
