@@ -23,13 +23,15 @@ const byte pinEmRadio = 10; // pin D10 emetteur radio
 
 // définition des pin
 enum PinAssignments {
- 
+
 };
 
 void setup() {
   Serial.begin (9600);
-  vw_set_tx_pin(pinEmRadio); // broche d10 emetteur
-  vw_setup(600); // initialisation de la bibliothèque avec la vitesse (vitesse_bps)
+  if (RADIO) {
+    vw_set_tx_pin(pinEmRadio); // broche d10 emetteur
+    vw_setup(600); // initialisation de la bibliothèque avec la vitesse (vitesse_bps)
+  }
 }
 
 void loop ()
@@ -63,7 +65,7 @@ void loop ()
       rad.assemblageMessage(chaine1);// on envoie le message
     }
     rad.finMessage();
-    
+
     if (RADIO) { // affichage si la batterie est faible
       // N.B. La constante VW_MAX_MESSAGE_LEN est fournie par la lib VirtualWire
       //char chaine1[VW_MAX_MESSAGE_LEN - 1] = "Batterie faible !!!!";

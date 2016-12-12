@@ -1,7 +1,8 @@
-/* JlmRadio433.h
+/***********************************
+  JlmRadio433.h
   prototype de la classe JlmRadio433
   radio 433MHz
-*/
+***********************************/
 
 #ifndef DEF_JlmRadio433
 #define DEF_JlmRadio433
