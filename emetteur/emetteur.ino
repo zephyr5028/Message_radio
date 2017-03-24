@@ -1,5 +1,5 @@
 /*******************************
-  gestion d'un radio 433MHz
+  gestion radio 433MHz
 
   avec
 
