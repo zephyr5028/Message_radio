@@ -30,7 +30,8 @@ void loop() {
 
   if (vw_get_message(message, &taille_message)) {
     // On copie le message, qu'il soit corrompu ou non
-
+    digitalWrite(13, true); // Flash a light to show received good message
     Serial.println((char*) message); // Affiche le message
+    digitalWrite(13, false);
   }
 }
