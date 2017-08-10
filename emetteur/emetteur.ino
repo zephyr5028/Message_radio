@@ -10,7 +10,7 @@
 
 /*-----debug-----*/
 const boolean DEBUG = false; // positionner debug pour l'utiliser ou pas
-const boolean RADIO = true; // positionner radio pour l'utiliser ou pas
+const boolean RADIO = true; // positionner radio pour l'utiliser ou pas<
 
 #include <SoftwareSerial.h>
 #include "JlmRadio433.h"
